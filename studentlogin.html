@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcFfB0kxqvhNA0ydCgXAW2S0QGrkY50vU",
+            authDomain: "librarysystem-7b7ce.firebaseapp.com",
+            projectId: "librarysystem-7b7ce",
+            storageBucket: "librarysystem-7b7ce.appspot.com",
+            messagingSenderId: "654974123036",
+            appId: "1:654974123036:web:f8c62da9845c9445a933d9",
+            measurementId: "G-JQYNVSBTSJ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.validateRegnumber = function() {
+            const regnumberInput = document.getElementById("regnumber");
+            const regnumber = regnumberInput.value;
+
+            if (regnumber.length < 8 || regnumber.length > 9) {
+                regnumberInput.classList.add("Registration Number must be 8 to 9 characters!!!");
+            } else {
+                regnumberInput.classList.remove("Invalid Credentials!!!");
+            }
+        };
+
+        window.validateStudentLogIn = async function() {
+            const regnumberInput = document.getElementById("regnumber");
+            const regnumber = regnumberInput.value;
+            const passwordInput = document.getElementById("password");
+            const password = passwordInput.value;
+
+            console.log('Registration Number:', regnumber);
+            console.log('Password:', password);
+
+            if (regnumber === '' || password === '') {
+                alert("Fill in Empty Spaces");
+                return false;
+            }
+
+            if (regnumber.length < 8 || regnumber.length > 9) {
+                regnumberInput.classList.add("invalid");
+                alert("Invalid Registration Number! It should be 8 or 9 characters.");
+                return false;
+            }
+
+            const studentsRef = collection(db, 'students');
+            const q = query(studentsRef, where('registration-number', '==', regnumber), where('password', '==', password));
+
+            const querySnapshot = await getDocs(q);
+            console.log('Query Snapshot:', querySnapshot);
+
+            if (!querySnapshot.empty) {
+                alert("Login successful!");
+                window.location.href = "homepage.html"; 
+                return true;
+            } else {
+                alert("Invalid Registration Number or Password!");
+                return false;
+            }
+        };
+
+        document.getElementById("StudentLogin").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            validateStudentLogIn(); // Call the validation function
+        });
+    </script>
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form id="StudentLogin">
+        <h3 class="h3">Login Here</h3>
+        <label for="regnumber">Registration Number</label>
+        <input type="text" id="regnumber" name="regnumber" placeholder="Registration Number" required oninput="validateRegnumber()">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <div class="commands">
+            <button type="submit" class="btn-login">Log In</button>
+        </div>
+    </form>
+</body>
+</html>

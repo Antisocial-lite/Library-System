@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #eba336;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="login-container">
+        <h3>Login</h3>
+        <input type="text" id="username" placeholder="Username" class="username" required>
+        <input type="password" id="password" placeholder="Password" class="password" required>
+        <p id="message"></p>
+        <button onclick="staffLogin()" class="btn-stafflogin">Login</button>
+        <a href="staffreset.html" class="rst-link">Forgot Password</a>
+    </div>
+    
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcFfB0kxqvhNA0ydCgXAW2S0QGrkY50vU",
+            authDomain: "librarysystem-7b7ce.firebaseapp.com",
+            projectId: "librarysystem-7b7ce",
+            storageBucket: "librarysystem-7b7ce.appspot.com",
+            messagingSenderId: "654974123036",
+            appId: "1:654974123036:web:f8c62da9845c9445a933d9",
+            measurementId: "G-JQYNVSBTSJ"
+        };
+
+        // Initialize Firebase and Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Staff login function
+        window.staffLogin = async function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+
+            if (!username || !password) {
+                message.textContent = 'Please fill in all fields.';
+                message.style.color = 'red';
+                return;
+            }
+
+            // Query Firestore for the librarian's credentials
+            const librarianRef = collection(db, 'librarian'); // Assuming there is a 'librarians' collection
+            const q = query(librarianRef, where('username', '==', username), where('password', '==', password));
+
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                message.textContent = 'Login successful!';
+                message.style.color = 'green';
+                // Redirect to the homepage
+                window.location.href = "homepage.html";
+            } else {
+                message.textContent = 'Invalid login. Please try again.';
+                message.style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>

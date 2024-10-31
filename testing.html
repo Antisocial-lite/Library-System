@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Seat Allocation</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #3b679e;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        h2 {
+            margin-top: 0;
+            align-self: left;
+        }
+        .seat {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            text-align: center;
+            line-height: 50px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            background-color: skyblue;
+            cursor: pointer;
+            color: black;
+        }
+        .computer {
+            background-color: #007bff;
+            color: black;
+        }
+        
+        .disabled {
+            background-color: #6c757d;
+            color: black;
+        }
+
+        .seat.computer {
+            background-color: yellow;
+            color:black;
+        }
+
+        .seat.disabled {
+            background-color: skyblue;
+            color: black;
+        }
+        .seat.computer.disabled{
+            background-color: yellow;
+            color:black;
+        }
+        .legend {
+            background-color:#3b679e;
+            border-radius: 8px; /* Rounded corners */
+            margin-bottom: 30px; /* Space below the legend */
+            margin-right: 10px;
+            margin-left: 10px;
+            text-align: left;
+        }
+
+.legend p {
+    font-size: 16px; /* Font size */
+}
+    </style>
+</head>
+<body>
+
+    <header class="lib-header">
+        <h2>Library Seat Allocation & Booking System</h2>
+        <nav class="lib-nav">
+            <a href="homepage.html">Homepage</a>
+            <a href="about.html">About Us</a>
+            <a href="Contact.html">Contact Us</a>
+            <div class="lib-dropdown">
+                <button class="lib-dropdown-btn"><img src="user.png" alt="user icon" width="26" height="26"></button>
+                <div class="lib-dropdown-content">
+                    <a href="mybookings.html">Active Bookings</a>
+                    <a href="studentdb.html">Profile</a>
+                    <a href="loginas.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="legend">
+        <p><span class="seat computer" style="background-color: greenyellow;"></span> Seat with Computer</p>
+        <p><span class="seat" style="background-color: yellow;"> </span> Regular Seat</p>
+    </div>
+
+    <div class="section">
+        <h2>Non-Disabled Section (Total: 40 Seats)</h2>
+        <div id="non-disabled-seats">
+            <!-- Non-disabled seats -->
+            <div class="seat">1</div>
+            <div class="seat">2</div>
+            <div class="seat">3</div>
+            <div class="seat computer">4 <span class="icon">💻</span></div>
+            <div class="seat computer">5 <span class="icon">💻</span></div>
+            <div class="seat computer">6 <span class="icon">💻</span></div>
+            <div class="seat computer">7 <span class="icon">💻</span></div>
+            <div class="seat">8</div>
+            <div class="seat">9</div>
+            <div class="seat">10</div>
+            <div class="seat computer">11 <span class="icon">💻</span></div>
+            <div class="seat computer">12 <span class="icon">💻</span></div>
+            <div class="seat computer">13 <span class="icon">💻</span></div>
+            <div class="seat">14</div>
+            <div class="seat">15</div>
+            <div class="seat">16</div>
+            <div class="seat">17 <span class="icon">💻</span></div>
+            <div class="seat">18 <span class="icon">💻</span></div>
+            <div class="seat">19 <span class="icon">💻</span></div>
+            <div class="seat">20</div>
+            <div class="seat">21</div>
+            <div class="seat">22</div>
+            <div class="seat">23 <span class="icon">💻</span></div>
+            <div class="seat">24 <span class="icon">💻</span></div>
+            <div class="seat">25 <span class="icon">💻</span></div>
+            <div class="seat">26 </div>
+            <div class="seat">27 </div>
+            <div class="seat">28</div>
+            <div class="seat">29</div>
+            <div class="seat computer">30 <span class="icon">💻</span></div>
+            <div class="seat computer">31 <span class="icon">💻</span></div>
+            <div class="seat computer">32 <span class="icon">💻</span></div>
+            <div class="seat">33</div>
+            <div class="seat">34</div>
+            <div class="seat">35</div>
+            <div class="seat computer">36 <span class="icon">💻</span></div>
+            <div class="seat computer">37 <span class="icon">💻</span></div>
+            <div class="seat computer">38 <span class="icon">💻</span></div>
+            <div class="seat computer">39 <span class="icon">💻</span></div>
+            <div class="seat">40</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Disabled Section (Total: 12 Seats)</h2>
+        <div id="disabled-seats">
+            <!-- Disabled seats -->
+            <div class="seat disabled">1</div>
+            <div class="seat disabled">2</div>
+            <div class="seat disabled">3</div>
+            <div class="seat computer disabled">4 <span class="icon">💻</span></div>
+            <div class="seat computer disabled">5 <span class="icon">💻</span></div>
+            <div class="seat computer disabled">6 <span class="icon">💻</span></div>
+            <div class="seat computer disabled">7 <span class="icon">💻</span></div>
+            <div class="seat disabled">8</div>
+            <div class="seat disabled">9</div>
+            <div class="seat disabled">10</div>
+            <div class="seat computer disabled">11 <span class="icon">💻</span></div>
+            <div class="seat computer disabled">12 <span class="icon">💻</span></div>
+        </div>
+    </div>
+</body>
+</html>
