@@ -3,132 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book a Seat - Library Booking System</title>
+    <title>Library Seat Availability & Booking</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .container {
-            max-width: 650px;
-            margin: 20px auto;
-            background-color: white;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #f4f4f4;
         }
-
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
         label {
+            display: block;
+            font-weight: bold;
             margin-bottom: 5px;
         }
-        input[type="datetime-local"],
-        input[type="number"],
-        input[type="submit"] {
+        input, select {
+            width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
+            font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
             width: 100%;
         }
-        input[type="submit"] {
-            background-color: #333;
-            color: white;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #555;
+        button:hover {
+            background-color: #45a049;
         }
         .message {
+            text-align: center;
             margin-top: 20px;
-            color: green;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <header class="lib-header">
-        <h2>Library Seat Allocation & Booking System</h2>
-        <nav class="lib-nav">
-            <a href="homepage.html">Homepage</a>
-            <a href="about.html">About Us</a>
-            <a href="Contact.html">Contact Us</a>
-            <div class="lib-dropdown">
-                <button class="lib-dropdown-btn"><img src="user.png" alt="user icon" width="26" height="26"></button>
-                <div class="lib-dropdown-content">
-                    <a href="mybookings.html">Active Bookings</a>
-                    <a href="studentdb.html">Profile</a>
-                    <a href="loginas.html">Logout</a>
-                </div>
-            </div>
-        </nav>
-    </header>
 
-    <div class="container">
-        <h2>Book a Seat</h2>
-        <form id="booking-form">
-            <label for="booking-time">Select Study Session Time:</label>
-            <input type="datetime-local" id="booking-time" required>
+<h1>Library Seat Availability & Booking</h1>
+<div class="form-container">
+    <form id="bookingForm">
+        <div class="form-group">
+            <label for="start-time">Select Study Session Start Time:</label>
+            <input type="datetime-local" id="start-time" name="start-time" required>
+        </div>
+        <div class="form-group">
+            <label for="duration">Select Duration (Max 4 hours):</label>
+            <select id="duration" name="duration" required>
+                <option value="1">1 hour</option>
+                <option value="2">2 hours</option>
+                <option value="3">3 hours</option>
+                <option value="4">4 hours</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="reg-number">Registration Number:</label>
+            <input type="text" id="reg-number" name="reg-number" required>
+        </div>
+        <div class="form-group">
+            <label for="seats">Number of Seats (Max 1):</label>
+            <input type="number" id="seats" name="seats" min="1" max="1" required value="1">
+        </div>
+        <button type="submit">Book Now</button>
+    </form>
+    <div class="message" id="message"></div>
+    <p>You can only book a session starting at least 30 minutes from now.</p>
+</div>
 
-            <label for="number-of-seats">Number of Seats:</label>
-            <input type="number" id="number-of-seats" min="1" required>
+<!-- Firebase Configuration -->
+<script src="https://www.gstatic.com/firebasejs/9.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.12.0/firebase-firestore.js"></script>
 
-            <input type="submit" value="Book Now">
-        </form>
-        <div class="message" id="message"></div>
-    </div>
+<script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
 
-    <script>
-        const bookings = [];
-        const bookingWindow = 30 * 60 * 1000; // 30 minutes in milliseconds
-        const cancellationWindow = 15 * 60 * 1000; // 15 minutes in milliseconds
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-        document.getElementById('booking-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const bookingTime = new Date(document.getElementById('booking-time').value);
-            const seatsRequested = parseInt(document.getElementById('number-of-seats').value);
-            const currentTime = new Date();
+    // Simulate user login (for demonstration purposes)
+    auth.signInAnonymously().catch((error) => {
+        console.error("Error signing in: ", error);
+    });
 
-            // Check if the booking is within the allowed hours
-            const bookingHour = bookingTime.getHours();
-            if (bookingHour < 8 || bookingHour >= 23) {
-                displayMessage("Bookings are not allowed between 11:30 PM and 8:00 AM.");
-                return;
+    // Function to book a seat
+    async function bookSeat(seatId, libraryId, duration, startTime, regNumber) {
+        const user = auth.currentUser;
+        if (user) {
+            try {
+                await db.collection('seats').doc(seatId).update({
+                    isBooked: true,
+                    regNumber: regNumber,  // Store the registration number
+                    duration: duration,
+                    startTime: startTime
+                });
+                document.getElementById('message').textContent = `Seat ${seatId} booked for ${duration} hours successfully!`;
+            } catch (error) {
+                console.error('Error booking seat:', error);
+                document.getElementById('message').textContent = 'Error booking seat. Please try again.';
             }
+        } else {
+            document.getElementById('message').textContent = 'User is not logged in.';
+        }
+    }
 
-            // Check if the booking time is at least 30 minutes in the future
-            if (bookingTime - currentTime < bookingWindow) {
-                displayMessage("You can only book a seat at least 30 minutes in advance.");
-                return;
-            }
+    // Handle form submission
+    document.getElementById('bookingForm').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent the default form submission
 
-            const booking = {
-                time: bookingTime,
-                seats: seatsRequested,
-                status: 'Booked',
-                feeCharged: false,
-                createdAt: currentTime
-            };
+        const seatId = 'your_seat_id'; // Replace with your logic to get the selected seat ID
+        const libraryId = 'library_A'; // Replace with your desired library ID
+        const duration = parseInt(document.getElementById('duration').value, 10);
+        const startTime = document.getElementById('start-time').value;
+        const regNumber = document.getElementById('reg-number').value; // Capture registration number
 
-            bookings.push(booking);
-            displayMessage("Booking successful!");
-
-            // Set a timeout to release the seat and charge fee if not cancelled
-            setTimeout(() => releaseSeat(booking), cancellationWindow);
-        });
-
-        function releaseSeat(booking) {
-            const currentTime = new Date();
-            if (booking.status === 'Booked' && (currentTime - booking.createdAt) > cancellationWindow) {
-                booking.status = 'Released';
-                if (!booking.feeCharged) {
-                    booking.feeCharged = true; // Charge fee logic here
-                    console.log("A fee of $1 has been charged for the booking at " + booking.time);
-                }
-                displayMessage("The seat has been released for booking.");
-            }
+        // Check if the start time is at least 30 minutes from now
+        const now = new Date();
+        const selectedTime = new Date(startTime);
+        if (selectedTime < new Date(now.getTime() + 30 * 60000)) {
+            document.getElementById('message').textContent = 'You can only book a session starting at least 30 minutes from now.';
+            return;
         }
 
-        function displayMessage(msg) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = msg;
-            setTimeout(() => { messageDiv.textContent = ''; }, 5000);
-        }
-    </script>
+        await bookSeat(seatId, libraryId, duration, startTime, regNumber);
+    });
+</script>
+
 </body>
 </html>
