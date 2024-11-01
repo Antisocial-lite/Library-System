@@ -154,11 +154,7 @@ transition: 0.3s;
     margin-right: auto;
     margin-top: 15%;
         width: 80%;
-        background: linear-gradient(
-  to right,
-  #ff512f,
-  #f09819
-);
+        background-color: white;
         color: #080710;
         padding: 15px 0;
         font-size: 20px;
