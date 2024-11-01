@@ -3,13 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book a Seat - Library Booking System</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Main Campus Library B-A-S</title>
     <style>
+        @media screen and (max-width: 400px) {
+            .features {
+                background-color: #3b679e;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            .features {
+                background-color: #7f9bbd;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #2d4452;
+            color: beige;
+        }
+
+        .lib-header {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 3px 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lib-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between links */
+        }
+
+        .lib-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 3px 6px;
+            transition: background-color 0.3s;
+        }
+
+        .lib-nav a:hover {
+            background-color: #106369;
+            border-radius: 5px;
+        }
+
+        .lib-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lib-dropdown-btn {
+            background-color: #106369;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: background-color 0.3s;
+        }
+
+        .lib-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #106369;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            right: 0; 
+            top: 100%; 
+        }
+
+        .lib-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .lib-dropdown-content a:hover {
+            background-color: #6e6918;
+        }
+
+        .lib-dropdown:hover .lib-dropdown-content {
+            display: block; 
+        }
+
         .container {
             max-width: 600px;
             margin: 20px auto;
-            background-color: white;
+            background-color: #485c68;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -18,6 +109,7 @@
         label {
             margin-bottom: 5px;
         }
+
         input[type="datetime-local"],
         input[type="number"],
         input[type="submit"] {
@@ -27,120 +119,231 @@
             border-radius: 4px;
             width: 100%;
         }
+
         input[type="submit"] {
             background-color: #333;
             color: white;
             cursor: pointer;
         }
+
         input[type="submit"]:hover {
             background-color: #555;
         }
+
         .message {
             margin-top: 20px;
             color: green;
+            background-color: white;
+        }
+
+        .bookh2 {
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        .custom-select,
+        .custom-input {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .custom-button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #fff;
+            background-color: #343a40;
+            border: 1px solid #343a40;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
     </style>
+    <!-- Firebase Initialization -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
 </head>
 <body>
-    <header class="lib-header">
-        <h2 class="h27">Library Seat Allocation & Booking System</h2>
-        <nav class="lib-nav">
-            <a href="homepage.html">Homepage</a>
-            <a href="about.html">About Us</a>
-            <a href="Contact.html">Contact Us</a>
-            <div class="lib-dropdown">
-                <button class="lib-dropdown-btn"><img src="user.png" alt="user icon" width="26" height="26"></button>
-                <div class="lib-dropdown-content">
-                    <a href="mybookings.html">Active Bookings</a>
-                    <a href="studentdb.html">Profile</a>
-                    <a href="loginas.html">Logout</a>
-                </div>
+<header class="lib-header">
+    <h2 class="h27">Library Seat Availability & Booking System</h2>
+    <nav class="lib-nav">
+        <a href="homepage.html">Homepage</a>
+        <a href="about.html">About Us</a>
+        <a href="Contact.html">Contact Us</a>
+        <div class="lib-dropdown">
+            <button class="lib-dropdown-btn">
+                <img src="user.png" alt="user icon" width="26" height="26">
+            </button>
+            <div class="lib-dropdown-content">
+                <a href="mybookings.html">Active Bookings</a>
+                <a href="studentdb.html">Profile</a>
+                <a href="loginas.html">Logout</a>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
+<div>
+    <h2 class="bookh2">Book a Seat</h2>
+</div>
+<div class="container">
+    <div class="message" id="message"></div> <!-- Message div above the form -->
+    <form id="booking-form">
+        <label for="booking-time">Select Study Session Start Time:</label>
+        <input type="datetime-local" id="booking-time" required>
 
-    <div class="container">
-        <h2>Book a Seat</h2>
-        <form id="booking-form">
-            <label for="booking-time">Select Study Session Time:</label>
-            <input type="datetime-local" id="booking-time" required>
+        <label for="duration">Select Duration (Max 4 hours):</label>
+        <select id="duration" required class="custom-select">
+            <option value="30">30 minutes</option>
+            <option value="60">1 hour</option>
+            <option value="120">2 hours</option>
+            <option value="180">3 hours</option>
+            <option value="240">4 hours</option>
+        </select>
 
-            <label for="number-of-seats">Number of Seats (Max 1):</label>
-            <input type="number" id="number-of-seats" min="1" max="1" value="1" readonly>
+        <label for="number-of-seats">Number of Seats (Max 1):</label>
+        <input type="number" id="number-of-seats" min="1" max="1" value="1" readonly class="custom-input">
+        <input type="submit" value="Book Now" class="custom-button">
+    </form>
+</div> 
 
-            <input type="submit" value="Book Now">
-        </form>
-        <div class="message" id="message"></div>
-    </div>
+<script>
+    const bookings = [];
+    const bookingWindow = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const cancellationWindow = 15 * 60 * 1000; // 15 minutes in milliseconds
+    const regNumber = "REG12345"; // Simulated registration number retrieval
 
-    <script>
-        const bookings = [];
-        const bookingWindow = 30 * 60 * 1000; // 30 minutes in milliseconds
-        const cancellationWindow = 15 * 60 * 1000; // 15 minutes in milliseconds
+    document.getElementById('booking-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const bookingTime = new Date(document.getElementById('booking-time').value);
+        const duration = parseInt(document.getElementById('duration').value) * 60 * 1000; // Convert minutes to milliseconds
+        const seatsRequested = parseInt(document.getElementById('number-of-seats').value);
+        const currentTime = new Date();
 
-        document.getElementById('booking-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const bookingTime = new Date(document.getElementById('booking-time').value);
-            const seatsRequested = parseInt(document.getElementById('number-of-seats').value);
-            const currentTime = new Date();
+        // Check if the booking time is in the future
+        if (bookingTime <= currentTime) {
+            displayMessage("You can only book a session starting at least 30 minutes from now.");
+            return;
+        }
 
-            // Check if the booking time is in the future
-            if (bookingTime <= currentTime) {
-                displayMessage("You can only book a session starting 30 minutes from now.");
-                return;
+        // Check if the booking is within the allowed hours
+        const bookingHour = bookingTime.getHours();
+        if (bookingHour < 8 || bookingHour >= 23) {
+            displayMessage("Bookings are not allowed between 11:30 PM and 8:00 AM.");
+            return;
+        }
+
+        // Check if booking is for the current day
+        const today = new Date();
+        if (bookingTime.getDate() !== today.getDate() || 
+            bookingTime.getMonth() !== today.getMonth() || 
+            bookingTime.getFullYear() !== today.getFullYear()) {
+            displayMessage("You can only book sessions for today.");
+            return;
+        }
+
+        // Check if the booking time is at least 30 minutes in the future
+        if (bookingTime - currentTime < bookingWindow) {
+            displayMessage("You can only book a seat at least 30 minutes in advance.");
+            return;
+        }
+
+        // Restrict to 1 seat only
+        if (seatsRequested > 1) {
+            displayMessage("You can only book one seat.");
+            return;
+        }
+
+        // Calculate end time based on duration
+        const endTime = new Date(bookingTime.getTime() + duration);
+        if (endTime.getHours() >= 23) {
+            displayMessage("Your booking cannot extend beyond the library's operating hours.");
+            return;
+        }
+
+        const booking = {
+            time: bookingTime.toISOString(),
+            duration: duration,
+            endTime: endTime.toISOString(),
+            seats: seatsRequested,
+            regNumber: regNumber, // Automatically collected
+            status: 'Booked',
+            feeCharged: false,
+            createdAt: currentTime.toISOString()
+        };
+
+        // Save booking to Firebase
+        saveBookingToFirebase(booking);
+    });
+
+    function saveBookingToFirebase(booking) {
+        const newBookingRef = firebase.database().ref('bookings').push();
+        newBookingRef.set(booking)
+            .then(() => {
+                displayMessage(`Booking successful! Your session is from ${new Date(booking.time).toLocaleString()} to ${new Date(booking.endTime).toLocaleString()}.`);
+            })
+            .catch((error) => {
+                displayMessage("Error saving booking: " + error.message);
+            });
+    }
+
+    function releaseSeat(booking) {
+        const currentTime = new Date();
+        if (booking.status === 'Booked' && (currentTime - new Date(booking.createdAt)) > cancellationWindow) {
+            booking.status = 'Released';
+            if (!booking.feeCharged) {
+                booking.feeCharged = true; // Charge fee logic here
+                console.log("A fee of $1 has been charged for the booking at " + booking.time);
             }
+            displayMessage("The seat has been released for booking.");
+        }
+    }
 
-            // Check if the booking is within the allowed hours
-            const bookingHour = bookingTime.getHours();
-            if (bookingHour < 8 || bookingHour >= 23) {
-                displayMessage("Bookings are not allowed between 11:30 PM and 8:00 AM.");
-                return;
-            }
+    function displayMessage(msg) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = msg;
+        setTimeout(() => { messageDiv.textContent = ''; }, 5000);
+    }
 
-            // Check if the booking time is at least 30 minutes in the future
-            if (bookingTime - currentTime < bookingWindow) {
-                displayMessage("You can only book a seat at least 30 minutes in advance.");
-                return;
-            }
+    // Function to update library status
+    const libraries = document.querySelectorAll('.library');
 
-            // Restrict to 1 seat only
-            if (seatsRequested > 1) {
-                displayMessage("You can only book one seat.");
-                return;
-            }
+    function updateLibraryStatus() {
+        const currentHour = new Date().getHours();
+        const statusText = currentHour >= 8 && currentHour < 24 ? "Open until 12am" : "Closed Until 8am";
 
-            const booking = {
-                time: bookingTime,
-                seats: seatsRequested,
-                status: 'Booked',
-                feeCharged: false,
-                createdAt: currentTime
-            };
-
-            bookings.push(booking);
-            displayMessage("Booking successful!");
-
-            // Set a timeout to release the seat and charge fee if not cancelled
-            setTimeout(() => releaseSeat(booking), cancellationWindow);
+        libraries.forEach(library => {
+            const statusElement = library.querySelector('.status');
+            statusElement.textContent = statusText;
         });
+    }
 
-        function releaseSeat(booking) {
-            const currentTime = new Date();
-            if (booking.status === 'Booked' && (currentTime - booking.createdAt) > cancellationWindow) {
-                booking.status = 'Released';
-                if (!booking.feeCharged) {
-                    booking.feeCharged = true; // Charge fee logic here
-                    console.log("A fee of $1 has been charged for the booking at " + booking.time);
-                }
-                displayMessage("The seat has been released for booking.");
-            }
-        }
-
-        function displayMessage(msg) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = msg;
-            setTimeout(() => { messageDiv.textContent = ''; }, 5000);
-        }
-    </script>
+    // Call the function to update status on page load
+    updateLibraryStatus();
+</script>
 </body>
 </html>
