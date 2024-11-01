@@ -169,23 +169,22 @@
             transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
     </style>
-    <!-- Firebase Initialization -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
-    <script>
-        // Your web app's Firebase configuration
+       <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCcFfB0kxqvhNA0ydCgXAW2S0QGrkY50vU",
+            authDomain: "librarysystem-7b7ce.firebaseapp.com",
+            projectId: "librarysystem-7b7ce",
+            storageBucket: "librarysystem-7b7ce.appspot.com",
+            messagingSenderId: "654974123036",
+            appId: "1:654974123036:web:f8c62da9845c9445a933d9",
+            measurementId: "G-JQYNVSBTSJ"
         };
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
     </script>
 </head>
 <body>
